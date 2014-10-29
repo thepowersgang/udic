@@ -101,8 +101,7 @@ struct Token
 	
 	static Token	eof();
 	static Token	single(enum eTokenType type);
-	static Token	string(std::string value);
-	static Token	ident(std::string value);
+	static Token	string(enum eTokenType, std::string value);
 	
 	Token();
 	~Token();

@@ -11,6 +11,16 @@ public:
 	virtual const char* what() const throw() { return "EOF while lexing"; }
 };
 
+bool isident(char ch) {
+	if( ch > 127 )	return true;
+	if( ch == '_' )	return true;
+	if( ch == '$' )	return true;
+	if( 'a' <= ch && ch <= 'z') 	return true;
+	if( 'A' <= ch && ch <= 'Z') 	return true;
+	if( '0' <= ch && ch <= '9') 	return true;
+	return false;
+}
+
 Lexer::Lexer(::std::istream& is):
 	m_is(is),
 	m_cached_valid(false)
@@ -36,8 +46,25 @@ Token Lexer::get_token()
 			case '/':
 				throw ParseError::Todo("C99/C++ comments");
 				break;
-			case '*':
-				throw ParseError::Todo("C comments");
+			case '*': {
+				::std::string	val;
+				for( ;; )
+				{
+					char ch;
+					if( (ch = this->_getc()) != '*' ) {
+						val.push_back(ch);
+						continue ;
+					}
+					if( (ch = this->_getc()) != '/' ) {
+						this->_ungetc();
+						val.push_back('*');
+						continue ;
+					}
+					val.push_back(ch);
+					break;
+				}
+				return Token::string(TokComment, val);
+				}
 			case '=':
 				return Token::single(TokSlashEqual);
 			default:
@@ -48,8 +75,14 @@ Token Lexer::get_token()
 		case 'a'...'z':
 		case 'A'...'Z':
 		case '_':
-		case '$':
-			throw ParseError::Todo("Identifiers");
+		case '$': {
+			::std::string	val;
+			val.push_back(m_cached);
+			while( isident(this->_getc()) )
+				val.push_back(m_cached);
+			this->_ungetc();
+			return Token::string(TokIdent, val);
+			}
 		default:
 			throw ParseError::UnknownChar(this->m_cached);
 		}

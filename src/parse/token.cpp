@@ -27,4 +27,11 @@ Token Token::single(enum eTokenType type)
 	// TODO: Assert it's a valid type
 	return rv;
 }
+Token Token::string(enum eTokenType type, ::std::string val)
+{
+	Token	rv(type);
+	rv.stringval = val; 
+	// TODO: Assert it's a valid type
+	return rv;
+}
 
