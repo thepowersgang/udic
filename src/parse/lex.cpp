@@ -1,6 +1,9 @@
 /*
  */
 #include <lex.hpp>
+#include <parse_common.hpp>
+#include <cassert>
+#include <cstdio>
 
 class LexEof: public std::exception {
 public:
@@ -9,7 +12,8 @@ public:
 };
 
 Lexer::Lexer(::std::istream& is):
-	m_is(is)
+	m_is(is),
+	m_cached_valid(false)
 {
 }
 
@@ -17,22 +21,23 @@ Token Lexer::get_token()
 {
 	try
 	{
+		// Eat whitespace
 		while( ::std::isspace(this->_getc()) )
-		{
-		}
+			;
 		this->_ungetc();
 		
 		switch( this->_getc() )
 		{
-		case '#':	return Token::single(TokHash);
+		case '#':
+			return Token::single(TokHash);
 		case '/':
 			switch( this->_getc() )
 			{
 			case '/':
-				throw ParseError::Misc("C99/C++ comments are not allowed in UDI code");
+				throw ParseError::Todo("C99/C++ comments");
 				break;
 			case '*':
-				return ParseError::Todo("C comments");
+				throw ParseError::Todo("C comments");
 			case '=':
 				return Token::single(TokSlashEqual);
 			default:
@@ -40,6 +45,11 @@ Token Lexer::get_token()
 				return Token::single(TokSlash);
 			}
 			break;
+		case 'a'...'z':
+		case 'A'...'Z':
+		case '_':
+		case '$':
+			throw ParseError::Todo("Identifiers");
 		default:
 			throw ParseError::UnknownChar(this->m_cached);
 		}

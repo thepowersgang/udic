@@ -4,12 +4,17 @@
 #define _LEX_H_
 
 #include <iostream>
+extern "C" {
+#include <stdint.h>
+};
+#include <types.hpp>
 
 enum eTokenType
 {
 	TokEOF,
 	
 	// - Preprocessor stuff
+	TokNewline,
 	TokComment,
 	TokHash,
 	
@@ -87,7 +92,7 @@ struct Token
 	union {
 		struct {
 			uint64_t	val;
-			tIntClass	type;
+			IntClass	type;
 		} integer;
 		struct {
 			double	value;
@@ -99,7 +104,9 @@ struct Token
 	static Token	string(std::string value);
 	static Token	ident(std::string value);
 	
+	Token();
 	~Token();
+	enum eTokenType	type() const { return m_type; }
 private:
 	Token(enum eTokenType type);
 };
