@@ -36,6 +36,10 @@ Token Preproc::get_token()
 				tok = _get_token();
 				switch( tok.type() )
 				{
+				case TokInteger:
+					throw ParseError::Todo("Preproc location annotation");
+				case TokIdent:
+					throw ParseError::Todo("Preprocessor");
 				default:
 					throw ParseError::SyntaxError(FORMAT("Unexpected ",tok," expected integer/indent"));
 				}

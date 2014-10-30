@@ -105,6 +105,8 @@ struct Token
 	static Token	single(enum eTokenType type);
 	static Token	string(enum eTokenType, std::string value);
 	
+	static const char *enumname(enum eTokenType type);
+	
 	Token();
 	~Token();
 	enum eTokenType	type() const { return m_type; }
