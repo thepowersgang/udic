@@ -7,14 +7,16 @@
 
 void parse_typedef(Preproc& lex, Program& program)
 {
-	TypeRef	base = parse_basetype(lex, program);
+	TypeRef	base = parse_basetype(lex, program, true);
 	throw ParseError::Todo("typedef");
 }
 
 ::std::vector<Definition> parse_definition(Preproc& lex, Program& program)
 {
-	// Get storage class
-	TypeRef	base = parse_basetype(lex, program);
+	// TODO: Get storage class
+	
+	// Get main type
+	TypeRef	base = parse_basetype(lex, program, true);
 	
 	::std::string	name;
 	TypeRef	type;
@@ -23,10 +25,10 @@ void parse_typedef(Preproc& lex, Program& program)
 	throw ParseError::Todo("definition");
 }
 
-Program parse_root(::std::istream& is)
+Program parse_root(::std::istream& is, const char *filename)
 {
 	Program	program;
-	Preproc	lex(is);
+	Preproc	lex(is, filename);
 	
 	for( ;; )
 	{

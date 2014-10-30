@@ -10,12 +10,12 @@ Program parse(const char *filename)
 {
 	if( ::std::strcmp(filename, "-") == 0 )
 	{
-		return parse_root(::std::cin);
+		return parse_root(::std::cin, filename);
 	}
 	else
 	{
 		::std::ifstream	fp(filename);
-		return parse_root(fp);
+		return parse_root(fp, filename);
 	}
 }
 

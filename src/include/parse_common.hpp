@@ -24,6 +24,16 @@ public:
 	virtual ::std::string	message() const;
 };
 
+class SyntaxError:
+	public Base
+{
+	const ::std::string m_reasonstr;
+public:
+	SyntaxError(::std::string reason);
+	virtual const char *what() const throw();
+	virtual ::std::string	message() const;
+};
+
 class UnknownChar:
 	public Base
 {

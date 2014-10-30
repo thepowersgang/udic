@@ -10,6 +10,7 @@ Token::Token():
 Token::Token(enum eTokenType type):
 	m_type(type)
 {
+	::std::cout << "new token (" << type << ")" << ::std::endl;
 }
 
 Token::~Token()

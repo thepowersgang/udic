@@ -1,11 +1,15 @@
 /*
  */
+#include <common.hpp>
 #include <preproc.hpp>
+#include <parse_common.hpp>
 #include <cassert>
 
-Preproc::Preproc(::std::istream& is):
+Preproc::Preproc(::std::istream& is, const char *filename):
 	m_root_lexer(is),
-	m_cached_valid(false)
+	m_cached_valid(false),
+	m_cur_filename(filename),
+	m_cur_linenum(1)
 {
 }
 
@@ -29,7 +33,14 @@ Token Preproc::get_token()
 			switch( tok.type() )
 			{
 			case TokHash:
+				tok = _get_token();
+				switch( tok.type() )
+				{
+				default:
+					throw ParseError::SyntaxError(FORMAT("Unexpected ",tok," expected integer/indent"));
+				}
 				// Preprocessor stuff!
+				throw ParseError::Todo("Preprocessor handling");
 				break;
 			case TokNewline:
 				break;

@@ -16,6 +16,19 @@ const char *ParseError::Todo::what() const throw()
 	return ::std::string(m_reasonstr);
 }
 
+ParseError::SyntaxError::SyntaxError(::std::string reason):
+	m_reasonstr(reason)
+{
+}
+const char *ParseError::SyntaxError::what() const throw()
+{
+	return "Syntax Error";
+}
+::std::string ParseError::SyntaxError::message() const
+{
+	return ::std::string(m_reasonstr);
+}
+
 ParseError::UnknownChar::UnknownChar(char ch):
 	m_ch(ch)
 {

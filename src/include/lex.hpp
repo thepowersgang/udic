@@ -56,10 +56,12 @@ enum eTokenType
 	
 	TokRword_inline,
 	TokRword_volatile,
+	TokRword_const,
 	
 	TokRword_typedef,
 	TokRword_static,
 	TokRword_extern,
+	TokRword_auto,
 	TokRword_register,
 	
 	TokRword_struct,
@@ -111,6 +113,7 @@ private:
 };
 
 extern ::std::ostream& operator<<(::std::ostream& os, struct Token& tok);
+extern ::std::ostream& operator<<(::std::ostream& os, enum eTokenType& tok);
 
 class Lexer
 {

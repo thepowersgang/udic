@@ -6,6 +6,6 @@
 #include <ast.hpp>
 #include <ios>
 
-extern Program	parse_root(::std::istream& is);
+extern Program	parse_root(::std::istream& is, const char *filename);
 
 #endif
