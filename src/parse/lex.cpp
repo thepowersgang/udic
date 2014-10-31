@@ -12,6 +12,7 @@ public:
 };
 
 bool isident(char ch) {
+	::std::cout << "isident(ch = " << (int)ch << ")\n";
 	if( ch > 127 )	return true;
 	if( ch == '_' )	return true;
 	if( ch == '$' )	return true;
@@ -104,7 +105,7 @@ char Lexer::_getc()
 {
 	if( !m_cached_valid )
 	{
-		m_is >> m_cached;
+		m_cached = m_is.get();
 		if( m_is.eof() )
 			throw LexEof();
 	}

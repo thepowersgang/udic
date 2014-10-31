@@ -33,18 +33,18 @@ Token Preproc::get_token()
 			switch( tok.type() )
 			{
 			case TokHash:
+				// Preprocessor stuff!
 				tok = _get_token();
 				switch( tok.type() )
 				{
 				case TokInteger:
 					throw ParseError::Todo("Preproc location annotation");
 				case TokIdent:
-					throw ParseError::Todo("Preprocessor");
+					this->handle_preproc( tok.string() );
+					break;
 				default:
 					throw ParseError::SyntaxError(FORMAT("Unexpected ",tok," expected integer/indent"));
 				}
-				// Preprocessor stuff!
-				throw ParseError::Todo("Preprocessor handling");
 				break;
 			case TokNewline:
 				break;
@@ -61,5 +61,18 @@ void Preproc::put_back(Token tok)
 {
 	assert(!m_cached_valid);
 	m_cached = tok;
+}
+
+void Preproc::handle_preproc(::std::string tag)
+{
+	if( tag == "include" )
+	{
+		// 
+		throw ParseError::Todo("Preprocessor - 'include'");
+	}
+	else
+	{
+		throw ParseError::SyntaxError(FORMAT("Unknown preprocessor op '", tag, "'"));
+	}
 }
 

@@ -90,7 +90,7 @@ enum eTokenType
 struct Token
 {
 	enum eTokenType	m_type;
-	::std::string	stringval;
+	::std::string	m_stringval;
 	union {
 		struct {
 			uint64_t	val;
@@ -110,6 +110,7 @@ struct Token
 	Token();
 	~Token();
 	enum eTokenType	type() const { return m_type; }
+	::std::string	string() const { return m_stringval; }
 private:
 	Token(enum eTokenType type);
 };
