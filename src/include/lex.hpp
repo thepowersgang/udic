@@ -51,6 +51,10 @@ enum eTokenType
 	TokDoubleMinus,
 	TokDoubleEqual,
 	TokExclamEqual,
+	TokLessThanEqual,
+	TokGreaterThanEqual,
+	TokDoubleLessThan,
+	TokDoubleGreaterThan,
 	
 	// - Assignment Operators
 	TokEqual,

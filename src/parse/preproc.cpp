@@ -21,7 +21,11 @@ Preproc::Preproc(::std::istream& is, const char *filename):
 
 Token Preproc::_get_token()
 {
-	return m_root_lexer.get_token();
+	Token rv = m_root_lexer.get_token();
+	
+	::std::cout << "token " << rv << ::std::endl;
+	
+	return rv;
 }
 
 Token Preproc::get_token()

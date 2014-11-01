@@ -12,7 +12,7 @@ public:
 };
 
 bool isident(char ch) {
-	::std::cout << "isident(ch = " << (int)ch << ")\n";
+	//::std::cout << "isident(ch = " << (int)ch << ")\n";
 	if( ch > 127 )	return true;
 	if( ch == '_' )	return true;
 	if( ch == '$' )	return true;
@@ -36,7 +36,7 @@ Token Lexer::get_token()
 		{
 		case ' ':
 		case '\t':
-			while( ::std::isspace(this->_getc()) )
+			while( ::std::isblank(this->_getc()) )
 				;
 			this->_ungetc();
 			return Token::single(TokWhitespace);
@@ -50,6 +50,18 @@ Token Lexer::get_token()
 			default:
 				this->_ungetc();
 				return Token::single(TokHash);
+			}
+			break;
+		case '<':
+			switch( this->_getc() )
+			{
+			case '=':
+				return Token::single(TokLessThanEqual);
+			case '<':
+				return Token::single(TokDoubleLessThan);
+			default:
+				this->_ungetc();
+				return Token::single(TokLessThan);
 			}
 			break;
 		case '/':
@@ -132,6 +144,7 @@ char Lexer::_getc()
 		m_cached = m_is.get();
 		if( m_is.eof() )
 			throw LexEof();
+		//::std::cout << "Charcter = " << (unsigned int)m_cached << ::std::endl;
 	}
 	m_cached_valid = false;
 	return m_cached;
@@ -203,6 +216,7 @@ Token Lexer::parse_number(unsigned int base)
 		if( ch == 'u' || ch == 'U' ) { is_unsigned = true; ch = this->_getc(); }
 		if( ch == 'l' || ch == 'L' ) { is_long     = true; ch = this->_getc(); }
 		if( ch == 'l' || ch == 'L' ) { is_longlong = true; ch = this->_getc(); }
+		this->_ungetc();
 		auto size = (!is_long ? IntClass::INT_INT : (!is_longlong ? IntClass::INT_LONG : IntClass::INT_LONGLONG));
 	
 		return Token::integer(val, size, !is_unsigned);

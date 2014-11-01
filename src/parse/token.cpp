@@ -10,7 +10,6 @@ Token::Token():
 Token::Token(enum eTokenType type):
 	m_type(type)
 {
-	::std::cout << "new token (" << type << ")" << ::std::endl;
 }
 
 Token::~Token()
@@ -90,6 +89,10 @@ const char *Token::enumname(enum eTokenType type)
 	case TokDoubleMinus:	return "TokDoubleMinus";
 	case TokDoubleEqual:	return "TokDoubleEqual";
 	case TokExclamEqual:	return "TokExclamEqual";
+	case TokLessThanEqual:	return "TokLessThanEqual";
+	case TokGreaterThanEqual:	return "TokGreaterThanEqual";
+	case TokDoubleLessThan:	return "TokDoubleLessThan";
+	case TokDoubleGreaterThan:	return "TokDoubleGreaterThan";
 
 	case TokEqual:  	return "TokEqual";
 	case TokPlusEqual:	return "TokPlusEqual";
@@ -141,6 +144,14 @@ const char *Token::enumname(enum eTokenType type)
 ::std::ostream& operator<<(::std::ostream& os, struct Token& tok)
 {
 	os << Token::enumname(tok.type());
+	switch( tok.type() )
+	{
+	case TokIdent:
+		os << "(" << tok.string() << ")";
+		break;
+	default:
+		break;
+	}
 	return os;
 }
 
