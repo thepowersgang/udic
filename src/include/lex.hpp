@@ -109,6 +109,7 @@ struct Token
 	static Token	eof();
 	static Token	single(enum eTokenType type);
 	static Token	string(enum eTokenType, std::string value);
+	static Token	integer(unsigned long long, IntClass::Size, bool);
 	static Token	verbatim(::std::vector<Token> tokens);
 	
 	static const char *enumname(enum eTokenType type);
@@ -137,6 +138,9 @@ public:
 private:
 	char	_getc();
 	void	_ungetc();
+
+	unsigned long long	read_number(unsigned int base);
+	Token	parse_number(unsigned int base);
 };
 
 #endif

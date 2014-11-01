@@ -89,6 +89,21 @@ Token Lexer::get_token()
 				return Token::single(TokSlash);
 			}
 			break;
+		case '0':
+			switch( this->_getc() )
+			{
+			case 'x':
+				return this->parse_number(16);
+			case '0' ... '9':
+				this->_getc();
+				return this->parse_number(8);
+			default:
+				this->_getc();
+				return this->parse_number(10);
+			}
+			break;
+		case '1' ... '9':
+			return this->parse_number(10);
 		case 'a'...'z':
 		case 'A'...'Z':
 		case '_':
@@ -127,3 +142,72 @@ void Lexer::_ungetc()
 	assert( !m_cached_valid );
 	m_cached_valid = true;
 }
+
+bool getdigit(unsigned int base, unsigned char ch, unsigned int& digit)
+{
+	if( base <= 10 )
+	{
+		if( '0' <= ch && ch <= '0'+base-1 ) {
+			digit = ch - '0';
+			return true;
+		}
+		return false;
+	}
+	else
+	{
+		if( '0' <= ch && ch <= '9' ) {
+			digit = ch - '0';
+			return true;
+		}
+		char last_letter = 'A' + base-10 - 1;
+		if( 'A' <= ch && ch <= last_letter ) {
+			digit = ch - 'A' + 10;
+			return true;
+		}
+		if( 'a' <= ch && ch <= last_letter + 'a'-'A' ) {
+			digit = ch - 'a' + 10;
+			return true;
+		}
+		return false;
+	}
+}
+
+unsigned long long Lexer::read_number(unsigned int base)
+{
+	unsigned int digit;
+	unsigned long long rv = 0;
+	while( getdigit(base, this->_getc(), digit) )
+	{
+		rv *= base;
+		rv += digit;
+	}
+	this->_ungetc();
+	return rv;
+}
+
+Token Lexer::parse_number(unsigned int base)
+{
+	// 1. Get number
+	unsigned long long val = this->read_number(base);
+	
+	char ch = this->_getc();
+	if( ch == '.' )
+	{
+		throw ParseError::Todo("Lexer::parse_number - decimals");
+	}
+	else
+	{
+		bool is_unsigned = false;
+		bool is_long = false;
+		bool is_longlong = false;
+		if( ch == 'u' || ch == 'U' ) { is_unsigned = true; ch = this->_getc(); }
+		if( ch == 'l' || ch == 'L' ) { is_long     = true; ch = this->_getc(); }
+		if( ch == 'l' || ch == 'L' ) { is_longlong = true; ch = this->_getc(); }
+		auto size = (!is_long ? IntClass::INT_INT : (!is_longlong ? IntClass::INT_LONG : IntClass::INT_LONGLONG));
+	
+		return Token::integer(val, size, !is_unsigned);
+	}
+	
+	throw ParseError::Todo("Lexer::parse_number");
+}
+

@@ -35,6 +35,12 @@ Token Token::string(enum eTokenType type, ::std::string val)
 	// TODO: Assert it's a valid type
 	return rv;
 }
+Token Token::integer(unsigned long long val, IntClass::Size size, bool is_signed)
+{
+	Token	rv(TokInteger);
+	// TODO:
+	return rv;
+}
 Token Token::verbatim(::std::vector<Token> tokens)
 {
 	Token	rv(TokVerbatim);
