@@ -14,6 +14,24 @@ void parse_typedef(Preproc& lex, Program& program)
 ::std::vector<Definition> parse_definition(Preproc& lex, Program& program)
 {
 	// TODO: Get storage class
+	Token tok = lex.get_token();
+	switch(tok.type())
+	{
+	case TokVerbatim:
+		return ::std::vector<Definition>();
+		//throw ParseError::Todo("Verbatim definition");
+	case TokRword_extern:
+		throw ParseError::Todo("Extern storage class");
+	case TokRword_inline:
+		throw ParseError::Todo("'inline' storage class");
+	case TokRword_static:
+		throw ParseError::Todo("'static' storage class");
+	case TokRword_auto:
+		throw ParseError::Todo("'auto' storage class");
+	default:
+		lex.put_back(tok);
+		break;
+	}
 	
 	// Get main type
 	TypeRef	base = parse_basetype(lex, program, true);
