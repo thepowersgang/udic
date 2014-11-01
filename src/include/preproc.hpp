@@ -22,7 +22,7 @@ public:
 	
 private:
 	Token	_get_token();
-	void	handle_preproc(::std::string tag);
+	Token	handle_preproc(::std::string tag);
 };
 
 #endif

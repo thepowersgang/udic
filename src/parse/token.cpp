@@ -35,15 +35,24 @@ Token Token::string(enum eTokenType type, ::std::string val)
 	// TODO: Assert it's a valid type
 	return rv;
 }
+Token Token::verbatim(::std::vector<Token> tokens)
+{
+	Token	rv(TokVerbatim);
+	// TODO: 
+	return rv;
+}
 
 const char *Token::enumname(enum eTokenType type)
 {
 	switch(type)
 	{
 	case TokEOF:    	return "TokEOF";            
+	case TokWhitespace:	return "TokWhitespace";
 	case TokNewline:	return "TokNewline";
 	case TokComment:	return "TokComment";
 	case TokHash:   	return "TokHash";
+	case TokDoubleHash:	return "TokDoubleHash";
+	case TokVerbatim:	return "TokVerbatim";
 	case TokIdent:  	return "TokIdent";
 	case TokInteger:	return "TokInteger";
 	case TokReal:   	return "TokReal";

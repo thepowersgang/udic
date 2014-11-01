@@ -32,17 +32,26 @@ Token Lexer::get_token()
 {
 	try
 	{
-		// Eat whitespace
-		while( ::std::isspace(this->_getc()) )
-			;
-		this->_ungetc();
-		
 		switch( this->_getc() )
 		{
+		case ' ':
+		case '\t':
+			while( ::std::isspace(this->_getc()) )
+				;
+			this->_ungetc();
+			return Token::single(TokWhitespace);
 		case '\n':
 			return Token::single(TokNewline);
 		case '#':
-			return Token::single(TokHash);
+			switch( this->_getc() )
+			{
+			case '#':
+				return Token::single(TokDoubleHash);
+			default:
+				this->_ungetc();
+				return Token::single(TokHash);
+			}
+			break;
 		case '/':
 			switch( this->_getc() )
 			{

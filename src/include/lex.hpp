@@ -4,6 +4,7 @@
 #define _LEX_H_
 
 #include <iostream>
+#include <vector>
 extern "C" {
 #include <stdint.h>
 };
@@ -15,8 +16,12 @@ enum eTokenType
 	
 	// - Preprocessor stuff
 	TokNewline,
+	TokWhitespace,
 	TokComment,
 	TokHash,
+	TokDoubleHash,
+	
+	TokVerbatim,
 	
 	// - Leaf nodes
 	TokIdent,
@@ -104,6 +109,7 @@ struct Token
 	static Token	eof();
 	static Token	single(enum eTokenType type);
 	static Token	string(enum eTokenType, std::string value);
+	static Token	verbatim(::std::vector<Token> tokens);
 	
 	static const char *enumname(enum eTokenType type);
 	
