@@ -1,5 +1,6 @@
 /*
  */
+#include <common.hpp>
 #include <parse_types.hpp>
 #include <parse_common.hpp>
 
@@ -101,7 +102,7 @@ TypeRef	parse_basetype(Preproc& lex, Program& program, const bool expect_type)
 	}
 	else
 	{
-		throw ParseError::SyntaxError("No type provided");
+		throw ParseError::SyntaxError( FORMAT("No type provided, got ", lex.get_token()) );
 	}
 	
 	if( is_const || is_volatile ) {

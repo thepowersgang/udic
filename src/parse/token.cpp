@@ -46,6 +46,11 @@ Token Token::verbatim(::std::vector<Token> tokens)
 	// TODO: 
 	return rv;
 }
+Token Token::include(::std::string path, bool is_angle_string)
+{
+	Token	rv(TokInclude);
+	return rv;
+}
 
 const char *Token::enumname(enum eTokenType type)
 {
@@ -58,6 +63,7 @@ const char *Token::enumname(enum eTokenType type)
 	case TokHash:   	return "TokHash";
 	case TokDoubleHash:	return "TokDoubleHash";
 	case TokVerbatim:	return "TokVerbatim";
+	case TokInclude:	return "TokInclude";
 	case TokIdent:  	return "TokIdent";
 	case TokInteger:	return "TokInteger";
 	case TokReal:   	return "TokReal";

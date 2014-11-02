@@ -28,6 +28,14 @@ Lexer::Lexer(::std::istream& is):
 {
 }
 
+struct {
+	const char* name;
+	enum eTokenType	type;
+} reserved_words[] = {
+	{ "typedef", TokRword_typedef },
+	{ "struct", TokRword_struct },
+};
+
 Token Lexer::get_token()
 {
 	try
@@ -125,6 +133,9 @@ Token Lexer::get_token()
 			while( isident(this->_getc()) )
 				val.push_back(m_cached);
 			this->_ungetc();
+			for( auto i: reserved_words )
+				if( val == i.name )
+					return Token::single(i.type);
 			return Token::string(TokIdent, val);
 			}
 		default:
@@ -134,6 +145,24 @@ Token Lexer::get_token()
 	catch( const LexEof& e )
 	{
 		return Token::eof();
+	}
+}
+::std::pair<::std::string,bool>	Lexer::read_cpp_string()
+{
+	::std::string	rv;
+	char	ch = ' ';
+	switch(_getc())
+	{
+	case '<':
+		while( (ch = _getc()) != '>' )
+			rv.push_back(ch);
+		return ::std::make_pair(rv, true);
+	case '"':
+		while( (ch = _getc()) != '"' )
+			rv.push_back(ch);
+		return ::std::make_pair(rv, false);
+	default:
+		throw ParseError::SyntaxError("Expected preprocessor string (<str>, or \"str\")");
 	}
 }
 

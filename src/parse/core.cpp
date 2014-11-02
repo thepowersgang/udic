@@ -8,6 +8,11 @@
 void parse_typedef(Preproc& lex, Program& program)
 {
 	TypeRef	base = parse_basetype(lex, program, true);
+	
+	::std::string	name;
+	TypeRef	type;
+	::std::tie(type,name) = parse_fulltype(lex, program);
+
 	throw ParseError::Todo("typedef");
 }
 
@@ -55,6 +60,13 @@ Program parse_root(::std::istream& is, const char *filename)
 		{
 		case TokEOF:
 			return program;
+		case TokInclude:
+			// #include
+			// - Search list of known headers (udi headers)
+			//  > If found, mark the contained functions as valid?
+			// - Otherwise, ignore and pass
+			//program.append_definitions( (::std::vector<Definition>){ Definition("#include <filename>") } );
+			break;
 		case TokRword_typedef:
 			parse_typedef(lex, program);
 			break;

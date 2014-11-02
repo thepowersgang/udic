@@ -19,16 +19,27 @@ Preproc::Preproc(::std::istream& is, const char *filename):
 {
 }
 
+Lexer& Preproc::_get_lexer()
+{
+	return m_root_lexer;
+}
+
 Token Preproc::_get_token()
 {
-	Token rv = m_root_lexer.get_token();
+	Token rv = this->_get_lexer().get_token();
 	
-	::std::cout << "token " << rv << ::std::endl;
+	::std::cout << "PREPROC token " << rv << ::std::endl;
 	
 	return rv;
 }
 
 Token Preproc::get_token()
+{
+	Token rv = get_token_w();
+	::std::cout << "Token " << rv << ::std::endl;
+	return rv;
+}
+Token Preproc::get_token_w()
 {
 	if( m_cached_valid )
 	{
@@ -73,6 +84,7 @@ Token Preproc::get_token()
 void Preproc::put_back(Token tok)
 {
 	assert(!m_cached_valid);
+	m_cached_valid = true;
 	m_cached = tok;
 }
 
@@ -84,8 +96,11 @@ Token Preproc::handle_preproc(::std::string tag)
 	
 	if( tag == "include" )
 	{
-		// 
-		throw ParseError::Todo("Preprocessor - 'include'");
+		// Handle includes by requesting a "read to EOL" from lexer
+		bool	is_angle_string;
+		::std::string	path;
+		::std::tie(path, is_angle_string) = _get_lexer().read_cpp_string();
+		return Token::include(path, is_angle_string);
 	}
 	else if( tag == "define" )
 	{

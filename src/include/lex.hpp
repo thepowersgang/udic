@@ -22,6 +22,7 @@ enum eTokenType
 	TokDoubleHash,
 	
 	TokVerbatim,
+	TokInclude,
 	
 	// - Leaf nodes
 	TokIdent,
@@ -115,6 +116,7 @@ struct Token
 	static Token	string(enum eTokenType, std::string value);
 	static Token	integer(unsigned long long, IntClass::Size, bool);
 	static Token	verbatim(::std::vector<Token> tokens);
+	static Token	include(::std::string path, bool is_angle_string);
 	
 	static const char *enumname(enum eTokenType type);
 	
@@ -138,6 +140,7 @@ public:
 	Lexer(::std::istream& is);
 	
 	Token get_token();
+	::std::pair<::std::string,bool>	read_cpp_string();
 
 private:
 	char	_getc();

@@ -21,6 +21,8 @@ public:
 	void	put_back(Token tok);
 	
 private:
+	Token	get_token_w();
+	Lexer&	_get_lexer();
 	Token	_get_token();
 	Token	handle_preproc(::std::string tag);
 };
