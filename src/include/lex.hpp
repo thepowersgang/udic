@@ -12,18 +12,19 @@ extern "C" {
 
 enum eTokenType
 {
+    TokNull,
 	TokEOF,
-	
+
 	// - Preprocessor stuff
 	TokNewline,
 	TokWhitespace,
 	TokComment,
 	TokHash,
 	TokDoubleHash,
-	
+
 	TokVerbatim,
 	TokInclude,
-	
+
 	// - Leaf nodes
 	TokIdent,
 	TokInteger,
@@ -34,13 +35,23 @@ enum eTokenType
 	TokParenOpen, TokParenClose,
 	TokSquareOpen, TokSquareClose,
 	TokLessThan, TokGreaterThan,
-	
+
 	// - Misc
 	TokPeriod, TokAmpersand,
 	TokComma, TokSemicolon,
 	TokStar,
 	TokArrow,	// ->
-	
+	TokColon,
+	TokQuestionMark,
+	TokAt,  // Added for UDIC
+
+    TokBackslash,
+    TokBacktick,
+    TokTilde,
+
+	TokDoublePeriod,    // syntax error, always (needed due to quirk of lexer)
+	TokTriplePeriod,    // varargs
+
 	// - Operators
 	TokPlus, TokMinus,
 	TokSlash, TokPercent,
@@ -50,34 +61,38 @@ enum eTokenType
 	TokDoubleAmpersand, TokDoublePipe,
 	TokDoublePlus,	// ungood
 	TokDoubleMinus,
+
 	TokDoubleEqual,
 	TokExclamEqual,
 	TokLessThanEqual,
 	TokGreaterThanEqual,
 	TokDoubleLessThan,
 	TokDoubleGreaterThan,
-	
+
 	// - Assignment Operators
 	TokEqual,
 	TokPlusEqual,
 	TokMinusEqual,
 	TokStarEqual,
 	TokSlashEqual,
-	
+	TokPercentEqual,
+	TokPipeEqual,
+	TokAmpersandEqual,
+
 	TokRword_inline,
 	TokRword_volatile,
 	TokRword_const,
-	
+
 	TokRword_typedef,
 	TokRword_static,
 	TokRword_extern,
 	TokRword_auto,
 	TokRword_register,
-	
+
 	TokRword_struct,
 	TokRword_enum,
 	TokRword_union,
-	
+
 	TokRword_void,
 	TokRword_char,
 	TokRword_short,
@@ -95,12 +110,17 @@ enum eTokenType
 	TokRword_do,
 	TokRword_if,
 	TokRword_else,
+
+	TokRword_break,
+	TokRword_continue,
+	TokRword_goto,
+	TokRword_return,
 };
 
-struct Token
+class Token
 {
 	enum eTokenType	m_type;
-	::std::string	m_stringval;
+	::std::string	m_str;
 	union {
 		struct {
 			uint64_t	val;
@@ -110,22 +130,20 @@ struct Token
 			double	value;
 		} real;
 	} m_data;
-	
-	static Token	eof();
-	static Token	single(enum eTokenType type);
-	static Token	string(enum eTokenType, std::string value);
+
+public:
+	Token(enum eTokenType type);
+	Token(enum eTokenType type, std::string value);
 	static Token	integer(unsigned long long, IntClass::Size, bool);
 	static Token	verbatim(::std::vector<Token> tokens);
 	static Token	include(::std::string path, bool is_angle_string);
-	
-	static const char *enumname(enum eTokenType type);
-	
+
+	static const char *typestr(enum eTokenType type);
+
 	Token();
 	~Token();
 	enum eTokenType	type() const { return m_type; }
-	::std::string	string() const { return m_stringval; }
-private:
-	Token(enum eTokenType type);
+	::std::string	string() const { return m_str; }
 };
 
 extern ::std::ostream& operator<<(::std::ostream& os, struct Token& tok);
@@ -133,21 +151,27 @@ extern ::std::ostream& operator<<(::std::ostream& os, enum eTokenType& tok);
 
 class Lexer
 {
-	::std::istream&	m_is;
-	bool	m_cached_valid;
-	char	m_cached;
+    struct EndOfFile {
+    };
+
+	::std::istream&	m_istream;
+	bool	m_last_char_valid;
+	char	m_last_char;
 public:
 	Lexer(::std::istream& is);
-	
+
 	Token get_token();
 	::std::pair<::std::string,bool>	read_cpp_string();
 
 private:
-	char	_getc();
-	void	_ungetc();
+	char	getc();
+	void	ungetc();
 
+    signed int getSymbol();
 	unsigned long long	read_number(unsigned int base);
 	Token	parse_number(unsigned int base);
+
+	uint32_t parseEscape(char enclosing);
 };
 
 #endif

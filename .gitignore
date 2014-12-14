@@ -1,3 +1,7 @@
 .*
 src/.obj/
 udic
+/*.depend
+/*.layout
+/bin
+/obj

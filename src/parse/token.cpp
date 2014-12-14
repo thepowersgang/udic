@@ -6,34 +6,23 @@ Token::Token():
 	m_type(TokEOF)	// use EOF as the invalid value
 {
 }
-
 Token::Token(enum eTokenType type):
-	m_type(type)
+    m_type(type),
+    m_str("")
+{
+}
+Token::Token(enum eTokenType type, ::std::string str):
+    m_type(type),
+    m_str(str)
 {
 }
 
 Token::~Token()
 {
-	
+
 }
 
-Token Token::eof()
-{
-	return Token(TokEOF);
-}
-Token Token::single(enum eTokenType type)
-{
-	Token	rv(type);
-	// TODO: Assert it's a valid type
-	return rv;
-}
-Token Token::string(enum eTokenType type, ::std::string val)
-{
-	Token	rv(type);
-	rv.m_stringval = val; 
-	// TODO: Assert it's a valid type
-	return rv;
-}
+
 Token Token::integer(unsigned long long val, IntClass::Size size, bool is_signed)
 {
 	Token	rv(TokInteger);
@@ -43,7 +32,7 @@ Token Token::integer(unsigned long long val, IntClass::Size size, bool is_signed
 Token Token::verbatim(::std::vector<Token> tokens)
 {
 	Token	rv(TokVerbatim);
-	// TODO: 
+	// TODO:
 	return rv;
 }
 Token Token::include(::std::string path, bool is_angle_string)
@@ -52,11 +41,11 @@ Token Token::include(::std::string path, bool is_angle_string)
 	return rv;
 }
 
-const char *Token::enumname(enum eTokenType type)
+const char *Token::typestr(enum eTokenType type)
 {
 	switch(type)
 	{
-	case TokEOF:    	return "TokEOF";            
+	case TokEOF:    	return "TokEOF";
 	case TokWhitespace:	return "TokWhitespace";
 	case TokNewline:	return "TokNewline";
 	case TokComment:	return "TokComment";
@@ -81,7 +70,7 @@ const char *Token::enumname(enum eTokenType type)
 	case TokSemicolon:	return "TokSemicolon";
 	case TokStar:   	return "TokStar";
 	case TokArrow:  	return "TokArrow";
-	
+
 	case TokPlus:   	return "TokPlus";
 	case TokMinus:  	return "TokMinus";
 	case TokSlash:  	return "TokSlash";
@@ -108,12 +97,12 @@ const char *Token::enumname(enum eTokenType type)
 
 	case TokRword_inline:	return "TokRword_inline";
 	case TokRword_volatile:	return "TokRword_volatile";
-	case TokRword_const:	return "TokRword_const"; 
+	case TokRword_const:	return "TokRword_const";
 
 	case TokRword_typedef:	return "TokRword_typedef";
 	case TokRword_static:	return "TokRword_static";
 	case TokRword_extern:	return "TokRword_extern";
-	case TokRword_auto:	return "TokRword_auto";  
+	case TokRword_auto:	return "TokRword_auto";
 	case TokRword_register:	return "TokRword_register";
 
 	case TokRword_struct:	return "TokRword_struct";
@@ -127,11 +116,11 @@ const char *Token::enumname(enum eTokenType type)
 	case TokRword_long:	return "TokRword_long";
 	case TokRword_signed:	return "TokRword_signed";
 	case TokRword_unsigned:	return "TokRword_unsigned";
-	case TokRword_float:	return "TokRword_float"; 
+	case TokRword_float:	return "TokRword_float";
 	case TokRword_double:	return "TokRword_double";
-	case TokRword_Bool:	return "TokRword_Bool";  
+	case TokRword_Bool:	return "TokRword_Bool";
 	case TokRword_Complex:	return "TokRword_Complex";
-        
+
 	case TokRword_for:	return "TokRword_for";
 	case TokRword_while:	return "TokRword_while";
 	case TokRword_do:	return "TokRword_do";
@@ -143,13 +132,13 @@ const char *Token::enumname(enum eTokenType type)
 
 ::std::ostream& operator<<(::std::ostream& os, enum eTokenType& tok)
 {
-	os << Token::enumname(tok);
+	os << Token::typestr(tok);
 	return os;
 }
 
 ::std::ostream& operator<<(::std::ostream& os, struct Token& tok)
 {
-	os << Token::enumname(tok.type());
+	os << Token::typestr(tok.type());
 	switch( tok.type() )
 	{
 	case TokIdent:
