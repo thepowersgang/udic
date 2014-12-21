@@ -114,6 +114,7 @@ static const struct {
   TOKENT("struct",  TokRword_struct),
   TOKENT("typedef", TokRword_typedef),
   //TOKENT("typeof",  TokRword_typeof),
+  TOKENT("void",    TokRword_void),
   TOKENT("while",   TokRword_while),
 };
 

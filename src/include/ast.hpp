@@ -20,21 +20,29 @@ struct Definition
 
 class Program
 {
+    ::std::map< ::std::string, Composite>   m_named_structs;
+    ::std::vector< ::std::auto_ptr<Composite> > m_anon_structs;
+
 	// Typedefs
 	::std::map< ::std::string, TypeRef >	m_typedefs;
-	
+
 	// Definitions
 	::std::vector< Definition >	m_definitions;
 
 public:
 	Program();
-	
+
+    TypeRef define_struct(::std::string name, ::std::vector<Composite::item_t> items);
+    TypeRef get_struct(::std::string name);
+
+    void add_typedef(::std::string name, TypeRef type);
+
 	void append_definitions(::std::vector<Definition> new_defs);
 };
 
 class ASTNodeImpl
 {
-	
+
 };
 
 #endif

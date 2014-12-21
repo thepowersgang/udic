@@ -8,12 +8,14 @@
 void parse_typedef(Preproc& lex, Program& program)
 {
 	TypeRef	base = parse_basetype(lex, program, true);
-	
+
 	::std::string	name;
 	TypeRef	type;
-	::std::tie(type,name) = parse_fulltype(lex, program);
+	::std::tie(type,name) = parse_fulltype(lex, program, base);
 
-	throw ParseError::Todo("typedef");
+    program.add_typedef(name, type);
+    if( lex.get_token().type() != TokSemicolon )
+        throw ParseError::SyntaxError("Expected TokSemicolon after typedef");
 }
 
 ::std::vector<Definition> parse_definition(Preproc& lex, Program& program)
@@ -37,14 +39,14 @@ void parse_typedef(Preproc& lex, Program& program)
 		lex.put_back(tok);
 		break;
 	}
-	
+
 	// Get main type
 	TypeRef	base = parse_basetype(lex, program, true);
-	
+
 	::std::string	name;
 	TypeRef	type;
-	::std::tie(type,name) = parse_fulltype(lex, program);
-	
+	::std::tie(type,name) = parse_fulltype(lex, program, base);
+
 	throw ParseError::Todo("definition");
 }
 
@@ -52,7 +54,7 @@ Program parse_root(::std::istream& is, const char *filename)
 {
 	Program	program;
 	Preproc	lex(is, filename);
-	
+
 	for( ;; )
 	{
 		Token tok = lex.get_token();

@@ -43,13 +43,15 @@ Token Token::include(::std::string path, bool is_angle_string)
 
 const char *Token::typestr(enum eTokenType type)
 {
+    #define _(tok)  case tok: return #tok;
 	switch(type)
 	{
-	case TokEOF:    	return "TokEOF";
-	case TokWhitespace:	return "TokWhitespace";
-	case TokNewline:	return "TokNewline";
-	case TokComment:	return "TokComment";
-	case TokHash:   	return "TokHash";
+    _(TokNull)
+    _(TokEOF)
+	_(TokWhitespace)
+	_(TokNewline)
+	_(TokComment)
+	_(TokHash)
 	case TokDoubleHash:	return "TokDoubleHash";
 	case TokVerbatim:	return "TokVerbatim";
 	case TokInclude:	return "TokInclude";
@@ -124,9 +126,12 @@ const char *Token::typestr(enum eTokenType type)
 	case TokRword_for:	return "TokRword_for";
 	case TokRword_while:	return "TokRword_while";
 	case TokRword_do:	return "TokRword_do";
-	case TokRword_if:	return "TokRword_if";
-	case TokRword_else:	return "TokRword_else";
+
+    _(TokRword_if)
+    _(TokRword_else)
+	_(TokRword_return)
 	}
+	#undef _
 	return "BADENUM";
 }
 
